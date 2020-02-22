@@ -3,9 +3,7 @@
 over this quick tutorial, I will try to answer five hypothetical questions about grad school application. the college data I will use is back in 2016, however, it is worth looking at it. 
 
 ---
-title: "College Data Viz, ggplot2"
-subtitle: "Introduction"
-output: html_document
+"College Data Viz, ggplot2"
 ---
 one of the beautifull aspects of data is that it help us to make quick decisions about our day today questions. This short tutorial I will try to answer few common questions that someone applying to graduate school may have. Since everyones' decision to apply specific school is based on his/her circumstance, I will consider someone with following circumstance:
 ```
