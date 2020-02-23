@@ -1,0 +1,128 @@
+---
+title: "COLLEGE DATA"
+subtitle: Introduction
+output: html_document
+---
+one of the beautifull aspects of data is that it help us to make quick decisions about our day today questions. This short tutorial I will try to answer few common questions that someone applying to graduate school may have. Since everyones’ decision to apply specific school is based on his/her circumstance, I will consider someone with following circumstance:
+
+```
+- Want to apply graduate schools.
+- schools must be in California.
+- tuition must be under 30K.
+_ School can be both Public or private.
+- school must have higher acceptance rate of 50% and more.
+the data contains school names, tuition fee, number of undergraduate students
+`````
+```{r}
+#install.package(tidyverse)
+library(tidyverse)
+```
+```{r}
+college <- read.csv('http://672258.youcanlearnit.net/college.csv')
+```
+
+after you import the data, check if your data is clean or not.
+
+```{r}
+summary(college)
+```
+Now the data you see has two patterns. one has STAT summary(e.g. tuition, undergrads) starting with Min-Max, and another one has LIST Summary(e.g. name, state..)ending with (Other). those with Stat summary has NUMERIC CLASS, and those with LIST Summary has FACTOR CLASS..
+
+The Loan_Default_rate do not have STAT SUMMARY but has a numeric values. check it out.
+```{r}
+class(college$loan_default_rate)
+```
+we need to force it into numeric class. look at the summary Loan_default_rate has numeric class
+
+```{r}
+college <- college %>%
+  mutate(loan_default_rate=as.numeric(loan_default_rate))
+summary(college)
+```
+
+Now the data looks clean. let us go ahead and start data visuaalization. before I answer the question let me look up the distribution of the tuition in general.
+
+```{r}
+college %>%
+  arrange(desc(tuition))%>%
+  select(name, tuition, region, highest_degree)%>%
+  ggplot(aes(highest_degree, tuition, color = highest_degree))+
+  geom_point()
+```
+
+This graph gives you good insight about the tuition in general. based on this graph tuition for grad school is in between ~5000 - 51000. in another words there is a chance this candidate will get school to apply in US that fits his/her financial condition.However we don’t know about California yet. let us check that now.
+````
+- schools must be in California.
+````
+
+```{r}
+college %>%
+  filter(state =="CA")%>%
+  arrange(desc(tuition))%>%
+  select(name,state, tuition, region, highest_degree)%>%
+  ggplot(aes(highest_degree, tuition, color = highest_degree))+
+  geom_point()
+```
+
+from this graph we can tell that there are number of grad schools in California that has tuition under 30K. imagine if this candidate want to apply Bachelor. we got one school only. now I want to names of these grad schools which seem affordable.
+
+```
+- tuition must be under 30K:
+````
+```{r}
+college %>%
+  filter(state =="CA"& tuition < 30000)%>%
+  arrange(desc(tuition))%>%
+  select(name,state, tuition, region, highest_degree)%>%
+  ggplot(aes(name, tuition, color = highest_degree))+
+  geom_point()+
+  coord_flip()
+```
+
+well, now we got handfull schools which are fitting our criteria. However, the graph looks bit messy. look how one line of code can change the readability of this graph.
+
+```{r}
+college %>%
+  filter(state =="CA"& tuition < 30000)%>%
+  arrange(desc(tuition))%>%
+  mutate(name = fct_reorder(name, tuition))%>%
+  select(name,state, tuition, region, highest_degree)%>%
+  ggplot(aes(name, tuition, color = highest_degree))+
+  geom_point()+
+  coord_flip()
+```
+
+well, now we got nice looking graph showing the school names. in case the candidate wanted to apply bachelor Thomas Aquinas College would have been the only option possible. However, our goal is not the bachelor, so I have to remove the bachelor and add admission criteria instead.
+
+````
+- Want to apply graduate schools.
+_ School can be both Public or private.
+- acceptance rate must be higher than  50%.
+```
+
+```{r}
+college %>%
+  filter(highest_degree =="Graduate"& state =="CA"& tuition < 30000& admission_rate >0.5)%>%
+  arrange(desc(tuition))%>%
+  mutate(name = fct_reorder(name, tuition))%>%
+  select(name,state, tuition, region, highest_degree, control, admission_rate)%>%
+  ggplot(aes(name, tuition, color = admission_rate,  shape =  control))+
+  geom_point()+
+  coord_flip()
+```
+
+It looks we got good number of schools fitting our criteria. at this point candidate may want to narrow his/her criteria where we can go down from here. however, the graph looks simple and readable. I just want to add titles/subtitle and dollar sign for better looking.
+
+```{r}
+college %>%
+  filter(highest_degree=="Graduate" & state == "CA"&tuition < 30000 & admission_rate > 0.5)%>%
+  mutate(name = fct_reorder(name, tuition))%>%
+  select(name, state, highest_degree, tuition, control, admission_rate)%>%
+  ggplot(aes(name, tuition, color = admission_rate,  shape =  control))+
+  geom_point()+
+  scale_y_continuous(name = "Tuition", breaks = c(10000, 15000, 20000, 25000,  30000), labels = c("$10K", "$15K", "$20K", "$25K", "$30K"))+
+  labs(title = "Top Most Affordable Grad Schools of CA", subtitle = "Year:2016")+
+  coord_flip()+
+  geom_abline()
+```
+
