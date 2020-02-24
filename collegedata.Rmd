@@ -3,8 +3,16 @@ title: "COLLEGE DATA"
 subtitle: Introduction
 output: html_document
 ---
-one of the beautifull aspects of data is that it help us to make quick decisions about our day today questions. This short tutorial I will try to answer few common questions that someone applying to graduate school may have. Since everyones’ decision to apply specific school is based on his/her circumstance, I will consider someone with following circumstance:
+one of the beautifull aspects of data is that it help us to make quick decisions about our day today questions. 
+This short tutorial I will try to answer few common questions that someone applying to graduate school may have. 
+Since everyones’ decision to apply specific school is based on his/her circumstance, 
+I will consider someone with following circumstance:
 
+NOTE: This data is  not mine, you can find publicly on http://672258.youcanlearnit.net/college.csv
+
+```
+If you want to see graphs of this data check Rpubs on https://rpubs.com/Alidheere/577196
+```
 ```
 - Want to apply graduate schools.
 - schools must be in California.
